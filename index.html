@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>拼图游戏</title>
+<meta name="viewport" id="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<link href="https://cdn.bootcss.com/magic/1.1.0/magic.min.css" rel="stylesheet">
+<link href="http://puzzle-1252701316.cosbj.myqcloud.com/css/common.css" rel="stylesheet">
+<meta name="x5-fullscreen" content="true">
+<style type="text/css">
+	*{
+		position: relative;
+	}
+	body,ol,ul,h1,h2,h3,h4,h5,h6,p,th,td,dl,dd,form,fieldset,legend,input,textarea,select{
+		margin:0;
+		padding:0;
+	}
+	#end-Popup button{
+		/*分享、重玩、排名按钮*/
+		padding:10px 15px;
+		font-size:16px;
+		border:0;
+		background-color:#3dbed2;
+		color:white;
+		border-radius: 40px;
+		box-shadow: 0 8px 10px 0 rgba(0,0,0,0.3), 0px 5px 7px 1px rgba(255,255,255,.7) inset, 0 -5px 7px 1px rgba(0,0,0,.5) inset;
+	}
+	#end-Popup>button{
+		/*领取钻石按钮*/
+		background-color: #bb0000;
+		font-size:17px;
+		margin-top:5px;
+	}
+	h1{
+		padding:5px;
+		color:white;
+	}
+	ol,ul,li {
+		list-style:none;
+		outline-style:none;/*FF  */
+	}
+	html,body{
+	  height:100%;
+	  width:100%;
+	  margin:0;
+	  padding:0;
+	  overflow: hidden;
+	  text-align: center;
+	}
+	.Popup{
+	    /*box-shadow: 0px 0px 15px 10px rgba(0,0,0,.1);*/
+	    background: url(http://puzzle-1252701316.file.myqcloud.com/icon/ranking_bg.jpg); 
+		transform: translate(-50%,-50%);
+		background-color: white;
+		border-radius: 5px;
+		position: absolute;
+		display: none;
+		height:420px;
+		z-index: 9;
+		width: 80%;
+		left:50%;
+		top:45%;
+
+		    box-shadow: 0 10px 10px 0 rgba(0,0,0,.3), 0px 5px 7px 1px rgba(255,255,255,.7) inset, 0 -5px 7px 1px rgba(0,0,0,.5) inset;
+	}
+	.Popup>b{
+	    box-shadow: 0 5px 7px 0 rgba(0,0,0,.5), 0px 5px 7px 1px rgba(255,255,255,.7) inset, 0 -5px 7px 1px rgba(0,0,0,.5) inset;
+		background-color: white;
+		border-radius: 30px;
+		position: absolute;
+		line-height: 26px;
+		font-size: 25px;
+		display: block;
+		height:24px;
+		right:-12px;
+		z-index:100;
+		width:24px;
+		top:-12px;
+	}
+	#end-Popup{
+		padding:10px;
+		background:url(http://puzzle-1252701316.file.myqcloud.com/icon/title2.png) no-repeat center 70% / 50% auto,url(http://puzzle-1252701316.file.myqcloud.com/icon/ranking_bg.jpg); 
+	}
+	#end-Popup>.label{
+		border-radius: 5px;
+		/*padding-right:80px;*/
+		text-align: left;
+		margin:5px 0;
+	}
+	#end-Popup input{
+	    border: 2px solid rgb(177, 98, 190);
+		background-color: white;
+		border-radius: 5px;
+		width:100%;
+		padding:0 10px;
+		height: 35px;
+		line-height: 20px;
+		font-size: 15px;
+	}
+	#end-Popup>p{
+		position: absolute;
+		margin:10% 10%;
+		left:0;
+		width:80%;
+		bottom:0;
+	}
+	#about-Popup{
+		height:400px;
+		width:300px;
+		background:url(http://puzzle-1252701316.file.myqcloud.com/icon/about_bg.jpg) no-repeat left top / 100% auto;
+	}
+	#ranking-Popup{
+		
+	}
+	#ranking-Popup>ul{
+		overflow-y: scroll;
+		-webkit-overflow-scrolling: touch;
+		color:#d31a1a;
+		height:330px;
+	}
+	#ranking-Popup>ul>li{
+		height: 25px;
+	}
+	#ranking-Popup>p{
+		width:100%;
+		height: 25px;
+		font-weight:bold;
+		font-size: 17px;
+		margin-bottom:3px;
+	}
+	#ranking-Popup>ul>li>span,#ranking-Popup>p>span{
+		float: left;
+		display: block;
+		width:40%;
+	}
+	#ranking-Popup>ul>li>span:nth-of-type(3),#ranking-Popup>p>span:nth-of-type(3){
+		width:20%;
+	}
+	section{
+		transition-duration: 1s;
+		position: absolute;
+		top:0;
+		left:0;
+		width:100%;
+		height:100%;
+	}
+	section:nth-of-type(1){
+		background: url(http://puzzle-1252701316.file.myqcloud.com/icon/zuanshi.png) no-repeat center center / 60% auto,url(http://puzzle-1252701316.file.myqcloud.com/icon/background.jpg) no-repeat center center / 100% 100%;
+	}
+	section:nth-of-type(1)>img{
+		width:80%;
+		height:auto;
+		margin-top:20px;
+		-webkit-animation-duration: 1.2s;
+		-webkit-animation-delay:0s;
+		animation-duration: 1.2s;
+		animation-delay:0s;
+	}
+	section:nth-of-type(1) button:nth-child(1){
+		background:url(http://puzzle-1252701316.file.myqcloud.com/icon/play.png) no-repeat center center / 100% 100%;
+		transform: translate(-50%,0%);
+		position: absolute;
+		bottom:130px;
+		width:140px;
+		height:60px;
+		border:none;
+		left:50%;
+	}
+	section:nth-of-type(1) button:nth-child(2){
+		position: absolute;
+		bottom:50px;
+		left:20%;
+		transform: translate(-20%,0%);
+		width:115px;
+		height:45px;
+		border:none;
+		background:url(http://puzzle-1252701316.file.myqcloud.com/icon/game-about.png) no-repeat center center / 100% 100%;
+	}
+	section:nth-of-type(1) button:nth-child(3){
+		position: absolute;
+		bottom:50px;
+		left:80%;
+		transform: translate(-70%,0%);
+		width:115px;
+		height:45px;
+		border:none;
+		background:url(http://puzzle-1252701316.file.myqcloud.com/icon/name-class.png) no-repeat center center / 100% 100%;
+	}
+	section:nth-of-type(2)>img:nth-of-type(2){
+		box-shadow: 0 8px 10px 0 rgba(0,0,0,0.3), 0px 2px 3px 1px rgba(255,255,255,.7) inset, 0 -2px 4px 1px rgba(0,0,0,.3) inset;
+	}
+	section:nth-of-type(2){
+		visibility: hidden;
+		text-align: left;
+		opacity: 0;
+		padding:20px 40px 0px 40px;
+		background:url(http://puzzle-1252701316.file.myqcloud.com/icon/page2.jpg) no-repeat left top / 100% 100%; 
+	}
+	section:nth-of-type(2)>#progressBar{
+	    margin: 0 auto 100px auto;
+		width:85%;
+		height:8px;
+		border-radius: 20px;
+	}
+	section:nth-of-type(2)>#progressBar>div{
+		box-shadow: 0 8px 10px 0 rgba(0,0,0,0.3), 0px 2px 3px 1px rgba(255,255,255,.7) inset, 0 -2px 4px 1px rgba(0,0,0,.3) inset;
+		right:0;
+		transition-duration:2s;
+		height:100%;
+		border-radius: 20px;
+		width:100%;
+		position: absolute;
+		background-color: #00bf00;
+	}
+	.gradient_120{
+		animation-name: color;
+		animation-duration: 120s;
+	}
+	.gradient_90{
+		animation-name: color;
+		animation-duration: 90s;
+	}
+	.gradient_80{
+		animation-name: color;
+		animation-duration: 80s;
+	}
+	.gradient_60{
+		animation-name: color;
+		animation-duration: 60s;
+	}
+	.gradient_45{
+		animation-name: color;
+		animation-duration: 45s;
+	}
+	@keyframes color{
+		0%{
+			background-color: #00bf00;
+		}
+		50%{
+			background-color: #ffad00;
+		}
+		100%{
+			background-color: red;
+		}
+	}
+	ul#content{
+		padding:0;
+		box-sizing:content-box;
+	    border: 5px solid #ffd011;
+	    box-shadow: 0 8px 10px 0 rgba(0,0,0,0.3);
+	    border-radius: 5px;
+	    margin-bottom:10px;
+	}
+	ul#content>li{
+		will-change: transform;/*预优化*/
+		-webkit-will-change: transform;
+		transition-property:transform;
+		background-repeat: no-repeat;
+		position:absolute;
+		display:block;
+		z-index:auto;
+	}
+</style>
+</head>
+<body>
+	<div id="share" ontouchend="Math.abs(x-event.changedTouches[0].clientX)<20&&Math.abs(y-event.changedTouches[0].clientY)<20?share.fadeToggle(0):undefined" ontouchstart="x=event.changedTouches[0].clientX,y=event.changedTouches[0].clientY" style="display: none;z-index:999;width:100%;height:100%;background:rgba(0,0,0,.7) url(http://puzzle-1252701316.file.myqcloud.com/icon/share.png) no-repeat center top /90% auto;"></div>
+	<div id="about-Popup" class="Popup">
+		<b ontouchend="Math.abs(x-event.changedTouches[0].clientX)<20&&Math.abs(y-event.changedTouches[0].clientY)<20?$(this).parent().fadeOut(0):undefined" ontouchstart="x=event.changedTouches[0].clientX,y=event.changedTouches[0].clientY">×</b>
+	</div>
+	<div id="end-Popup" class="Popup">
+		<b ontouchend="Math.abs(x-event.changedTouches[0].clientX)<20&&Math.abs(y-event.changedTouches[0].clientY)<20?$(this).parent().fadeOut(0):undefined" ontouchstart="x=event.changedTouches[0].clientX,y=event.changedTouches[0].clientY">×</b>
+		<h1 style="padding:15px;">得分：</h1>
+		<div class="label">
+			<input type="text" id="name" placeholder="请输入您的昵称">
+		</div>
+		<div class="label">
+			<input type="text" id="aibaId" placeholder="请输入您的爱吧id">
+		</div>
+		<button ontouchend="Math.abs(x-event.changedTouches[0].clientX)<20&&Math.abs(y-event.changedTouches[0].clientY)<20?submit():undefined" ontouchstart="x=event.changedTouches[0].clientX,y=event.changedTouches[0].clientY">领取钻石</button>
+		<p>
+			<button style="position: absolute;left:0;bottom:0;" ontouchend="Math.abs(x-event.changedTouches[0].clientX)<20&&Math.abs(y-event.changedTouches[0].clientY)<20?share.fadeToggle(0):undefined" ontouchstart="x=event.changedTouches[0].clientX,y=event.changedTouches[0].clientY">分享</button>
+			<button style="font-size: 17px;width:60px;height:60px;line-height:40px;padding:0;background-color: #69d94b;" ontouchend="Math.abs(x-event.changedTouches[0].clientX)<20&&Math.abs(y-event.changedTouches[0].clientY)<20?(play(),$('.Popup').fadeOut(0)):undefined" ontouchstart="x=event.changedTouches[0].clientX,y=event.changedTouches[0].clientY">重玩</button>
+			<button style="position: absolute;right:0;bottom:0;background-color: #d940d0;" ontouchend="Math.abs(x-event.changedTouches[0].clientX)<20&&Math.abs(y-event.changedTouches[0].clientY)<20?$('#ranking-Popup').fadeToggle(0):undefined" ontouchstart="x=event.changedTouches[0].clientX,y=event.changedTouches[0].clientY">排名</button>
+		</p>
+	</div>
+	<div id="ranking-Popup" class="Popup">
+		<b ontouchend="Math.abs(x-event.changedTouches[0].clientX)<20&&Math.abs(y-event.changedTouches[0].clientY)<20?$(this).parent().fadeOut(0):undefined" ontouchstart="x=event.changedTouches[0].clientX,y=event.changedTouches[0].clientY">×</b>
+		<h1>排行榜</h1>
+		<p>
+			<span>昵称</span>
+	    	<span>爱吧id</span>
+	    	<span>得分</span>
+		</p>
+		<ul>
+		    <li>
+		    	<span>世上无难事</span>
+		    	<span>只要肯放弃</span>
+		    	<span>100</span>
+		    </li>
+		    <li>
+		    	<span>世上无难事</span>
+		    	<span>只要肯放弃</span>
+		    	<span>100</span>
+		    </li>
+		    <li>
+		    	<span>世上无难事</span>
+		    	<span>只要肯放弃</span>
+		    	<span>100</span>
+		    </li>
+		    <p style="clear: both;"></p>
+		</ul>
+	</div>
+	<section>
+		<button ontouchend="Math.abs(x-event.changedTouches[0].clientX)<20&&Math.abs(y-event.changedTouches[0].clientY)<20?play():undefined" ontouchstart="x=event.changedTouches[0].clientX,y=event.changedTouches[0].clientY"></button>
+		<button ontouchend="Math.abs(x-event.changedTouches[0].clientX)<20&&Math.abs(y-event.changedTouches[0].clientY)<20?($('#ranking-Popup,#end-Popup').fadeOut(0),$('#about-Popup').fadeToggle(0)):undefined" ontouchstart="x=event.changedTouches[0].clientX,y=event.changedTouches[0].clientY"></button>
+		<button ontouchend="Math.abs(x-event.changedTouches[0].clientX)<20&&Math.abs(y-event.changedTouches[0].clientY)<20?($('#about-Popup').fadeOut(0),$('#ranking-Popup').fadeToggle(0)):undefined" ontouchstart="x=event.changedTouches[0].clientX,y=event.changedTouches[0].clientY"></button>
+		<img>
+	</section>
+	<section>
+		<div id="progressBar">
+			<div></div>
+		</div>
+		<ul id='content'>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+		</ul>
+		<img src="http://puzzle-1252701316.file.myqcloud.com/icon/reset.png" style="float: right;" width="100" height="100" onclick="changeGrade(currentGrade,currentGradeTime)">
+		<img src="" style="width:100px;height:100px;">
+	</section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/vConsole/3.3.4/vconsole.min.js"></script>
+<script type="text/javascript">
+  	new VConsole();
+	var x=0,y=0;
+	$('body').height($('body')[0].clientHeight);//解决安卓某些机型键盘弹出挤压页面的问题
+	document.querySelector('body').addEventListener('touchmove', function (ev) {//禁止微信和安卓某些机型拖动页面
+	    if (!document.querySelector('#ranking-Popup>ul').contains(ev.target)) {
+	        ev.preventDefault();
+	    }
+	});
+	function submit(){
+		var name=document.querySelector("#name");
+		var id=document.querySelector("#aibaId");
+		if(name.value&&id.value){
+			alert("恭喜您获得30钻石，已充值到id为 "+id.value+" 的账号,请查收");
+		}else{
+			alert("请正确填写信息");
+		}
+	}
+</script>
+<script type="text/javascript">
+	var disabled_flag=false;//是否能点击刷新按钮
+	var page1=$("section:eq(0)");
+	var page2=$("section:eq(1)");
+	var page3=$("section:eq(2)");
+	var end_Popup=$("#end-Popup");//结束结算弹窗
+	var ranking_Popup=$("#ranking-Popup");//排行榜弹窗
+	var share=$("#share");
+	//图片加载完成再执行首页动画|page1-----------------------------------------
+	var titleIcon=new Image();
+	titleIcon.src="http://puzzle-1252701316.file.myqcloud.com/icon/title.png";
+	titleIcon.onload = function() {
+		page1.find("img").addClass("tinUpIn").attr("src",titleIcon.src);
+	}//首页动画结束
+	function play(){
+		$("#ranking-Popup,#about-Popup").fadeOut();
+		page1.css({"visibility":"hidden","opacity":0});
+		page2.css({"visibility":"visible","opacity":1});
+		changeGrade(currentGrade,currentGradeTime);
+	}
+
+
+
+	//page2初始化参数------------------------------------
+	var content = document.getElementById('content'),
+		currentGrade=0,//当前关卡
+		currentGradeTime=60,//当前关卡时间
+		score=0,//当前得分
+		progress=$("#progressBar>div"),//进度条元素
+		lis = content.querySelectorAll("li"),
+		countDown=0,//倒计时定时器
+		imgUrl=['./image/1.jpg',
+				'./image/2.jpg',
+				'./image/1.gif',
+				'./image/3.jpg',
+				'./image/4.jpeg',
+				'./image/5.jpg',
+				'./image/6.jpeg',
+				'./image/7.jpg',
+				'./image/8.jpg',
+				
+		],//图片路径
+		boxWidth=screen.width-80,//盒子的宽度
+		boxHeight=boxWidth,//盒子的高度
+		row = 3, //行
+		col = 3, //列
+		w = boxWidth/row, //方格的宽
+		h = boxHeight/col, //方格的高
+		numberArr=[];//数字数组
+	for(var i=0;i<row*col;i++){
+		numberArr.push(i);
+	}
+	//先加载图片
+	for(var i=0;i<imgUrl.length;i++){
+		var img=new Image();
+		img.src=imgUrl[i];
+	}
+	content.style.width=boxWidth+'px';
+	content.style.height=boxHeight+'px';
+	//所有方格相对应的图片下标
+	var locationGroup = [{
+		index: 0//当前坐标对应的图片下标
+	}];
+	//当前拼正确的数量
+	function correctChunkNum(){
+		var num=0;
+		for (var i = 0; i < locationGroup.length; i++) {
+			if (locationGroup[i].index == i) {
+				num++;
+			};
+		}
+		return num;
+	}
+	//改变难度
+	function changeGrade(currentGrade_,s){
+		if(disabled_flag)return;
+		currentGrade=currentGrade_;
+		clearInterval(countDown);//清除计时器
+		progress.css("transition-duration","0s");
+		progress.css("width","100%");
+		var ss=s;//总秒数
+		progress.removeClass();
+		setTimeout(function(){
+			progress.addClass("gradient_"+ss);
+		})
+		countDown=setInterval(function(){
+			s--;
+			progress.css("transition-duration","2s");
+			progress.css("width",parseInt(s/ss*100)+"%");
+			if(s==0){
+				clearInterval(countDown);
+				
+				end_Popup.find("h1").text('当前得分：' + parseInt((score+Math.round(correctChunkNum()/(row*col)*Math.ceil((currentGrade+1)/3)*10))/180*100));
+				end_Popup.show();
+				page1.css({"visibility":"visible","opacity":1});
+				page2.css({"visibility":"hidden","opacity":0});
+
+
+				currentGrade=0;//初始化关卡
+				score=0;//初始化得分
+				currentGradeTime=60;//初始化时间
+				// changeGrade(currentGrade,currentGradeTime);
+			}
+		},1000)
+		row=Math.floor(currentGrade_/3)+3;//行
+		col=row;//列
+		w = boxWidth/row; //方格的宽
+		h = boxHeight/col; //方格的高
+		numberArr=[];
+		for(var i=0;i<row*col;i++){
+			numberArr.push(i);
+		}
+		$(lis).unbind();
+		getLocation();
+		render();
+		console.log(content.querySelectorAll("li").length);
+	}
+	//遍历出所有元素正确坐标点
+	function getLocation() {
+		locationGroup=[];
+		var sum=0,x=0,y=0;
+		for (var i = 0; i < row; i++) {
+			for (var j = 0; j < col; j++) {
+				// debugger;
+				var rand=parseInt(Math.random()*(row*col-sum));
+				var index=numberArr[rand];
+				numberArr.splice(rand,1);
+				var loc = {
+					index: index,
+					x: x + w * j,
+					y: y + h * i
+				}
+				locationGroup[sum] = loc;
+				sum++;
+			}
+		}
+	}
+
+	//开始渲染
+	var deg=360;
+	function render() {
+		lis = content.querySelectorAll("li");
+		// debugger;
+		if(lis.length>=locationGroup.length){//元素多实际少
+			for(var i=0;i<lis.length;i++){
+				if(i>=locationGroup.length){
+					$(lis[i]).hide();
+				}else{
+					$(lis[i]).show();
+				}
+			}
+		}else if(lis.length<locationGroup.length){//元素少实际多
+			var liTemp = '';
+			for (var i = 0; i < locationGroup.length; i++) {
+				if(locationGroup.length>=i){
+					liTemp += "<li></li>";
+				}
+			}
+			$(content).html(liTemp);
+			lis = content.querySelectorAll("li");
+		}
+		// makePictureBlocks(row,col,w,h,"canyon_2560x1440.jpg",function(img){
+			page2.find("img:eq(1)").attr("src",imgUrl[currentGrade]);
+			var li=$(lis);
+			li.css({"background-image":"url("+imgUrl[currentGrade]+")","background-size":boxWidth+"px "+boxHeight+"px"});
+			for (var i = 0; i < locationGroup.length; i++) {
+				lis[locationGroup[i].index].style.width = w + "px";
+				lis[locationGroup[i].index].style.height = h + "px";
+				$(lis[locationGroup[i].index]).css({"transform":"translate3d("+locationGroup[i].x+"px,"+locationGroup[i].y+"px,0) rotate("+deg+"deg)","transition-duration": ".5s"});
+				li.eq(i).css("background-position","-"+locationGroup[i].x+"px -"+locationGroup[i].y+"px");
+			}
+			start();
+		// });
+	}
+
+
+	//制作对应尺寸的图片(未使用)
+	// function makePictureBlocks(row, col, w, h, _imgUrl,Callback) {
+	// 	if(imgUrl==_imgUrl){
+	// 		return Callback(imgUrlDatabase);
+	// 	}
+	// 	imgUrl=_imgUrl;
+	// 	var img = new Image();
+	// 	var canvas = document.createElement('canvas');
+	// 	var ctx = canvas.getContext('2d');
+	// 	img.width = col * w;
+	// 	img.height = row * h;
+	// 	canvas.width = col * w;
+	// 	canvas.height = row * h;
+	// 	img.src = imgUrl;
+	// 	img.onload = function() {
+	// 		ctx.drawImage(img, 0, 0, col*w, row*h);
+	// 		var imgData = canvas.toDataURL("image/png");
+	// 		img = new Image();
+	// 		img.src = imgData;
+	// 		img.onload=function(){
+	// 			imgUrlDatabase=imgData;
+	// 			Callback(imgData);
+	// 		}
+	// 	}
+	// }
+	//根据相对坐标获取对应的行-x，列-y，下标-index
+	function getLocalIndex(x, y) {
+		var x = parseInt(x / w);
+		var y = parseInt(y / h);
+		var index = col * (y + 1) - (col - (x + 1) + 1);
+		return {
+			x: x * w,
+			y: y * h,
+			index: index
+		};
+	}
+
+	function start() {
+		var ul = $(content);
+		//容器的坐标
+		var left = ul.offset().left;
+		var top = ul.offset().top;
+		$(lis).on("touchstart", function(e) {
+			event.preventDefault();
+			event.stopPropagation();
+			var that = this;
+			$(lis).css({
+				"transition-duration": "0s",
+				"z-index": "auto"
+			})
+			//开始触摸的点（相对于容器坐标）
+			var startX = e.changedTouches[0].clientX - left;
+			var startY = e.changedTouches[0].clientY - top;
+			var start = getLocalIndex(startX, startY);
+			//相对于当前元素的坐标
+			var thatLeft = e.changedTouches[0].clientX - $(lis[locationGroup[start.index].index]).offset().left;
+			var thatRight = e.changedTouches[0].clientY - $(lis[locationGroup[start.index].index]).offset().top;
+			$(lis[locationGroup[start.index].index]).on("touchmove", function(e) {
+				event.preventDefault();
+				event.stopPropagation();
+				var moveX = e.changedTouches[0].clientX - left - thatLeft;
+				var moveY = e.changedTouches[0].clientY - top - thatRight;
+				// console.log(moveX,moveY);
+				moveX = Math.min(moveX > 0 ? moveX : 0, (col - 1) * w);
+				moveY = Math.min(moveY > 0 ? moveY : 0, (row - 1) * h);
+				$(lis[locationGroup[start.index].index]).css({
+					"transform":"translate3d("+moveX+"px,"+moveY+"px,0)",
+					"z-index": 9
+				});
+
+			})
+			$(lis[locationGroup[start.index].index]).one("touchend", function(e) {
+				event.preventDefault();
+				event.stopPropagation();
+				$(that).unbind("touchend");
+				$(that).unbind("touchmove");
+				//结束触摸的点（相对于容器坐标
+				var endX = e.changedTouches[0].clientX - left;
+				var endY = e.changedTouches[0].clientY - top;
+				endX = Math.min(endX > 0 ? endX : 0, (col - 1) * w);
+				endY = Math.min(endY > 0 ? endY : 0, (row - 1) * h);
+				var end = getLocalIndex(endX, endY);
+				if (start.index != end.index) {
+					$(lis[locationGroup[end.index].index]).css({
+						"transform":"translate3d("+start.x+"px,"+start.y+"px,0)",
+						"z-index":8,
+						"transition-duration": ".3s"
+					});
+					$(lis[locationGroup[start.index].index]).css({
+						"transform":"translate3d("+end.x+"px,"+end.y+"px,0)",
+						"transition-duration": ".3s"
+					}); ////////////////////////////////真他妈绕啊这一块
+					var temp = locationGroup[start.index].index; //临时变量
+					locationGroup[start.index].index = locationGroup[end.index].index;
+					locationGroup[end.index].index = temp;
+				}else{
+					$(lis[locationGroup[start.index].index]).css({
+						"transform":"translate3d("+start.x+"px,"+start.y+"px,0)",
+						"transition-duration": ".3s"
+					});
+				}
+				console.log('当前得分：', parseInt((score+Math.round(correctChunkNum()/(row*col)*Math.ceil((currentGrade+1)/3)*10))/180*100) );
+				if (correctChunkNum() == row * col) {
+					clearInterval(countDown);//清除倒计时
+					//计算分数
+					score+=Math.ceil((currentGrade+1)/3)*10;
+					if(currentGrade==imgUrl.length-1){//通关
+						currentGrade=0;//初始化关卡
+						score=0;//初始化得分
+						currentGradeTime=60;//初始化时间
+						page1.css({"visibility":"visible","opacity":1});
+						page2.css({"visibility":"hidden","opacity":0});
+						end_Popup.find("h1").text('当前得分：' + parseInt((score+Math.round(correctChunkNum()/(row*col)*Math.ceil((currentGrade+1)/3)*10))/180*100));
+						end_Popup.show();
+						return;
+					}else{
+						currentGrade+=1;//下一个关卡
+					};
+					deg+=360;
+					currentGradeTime=Math.ceil((currentGrade+1)/3)*30+30;
+					setTimeout(function(){
+						changeGrade(currentGrade,currentGradeTime);
+					},1000)
+				}
+			})
+		})
+	}
+</script>
+</body>
+</html>
